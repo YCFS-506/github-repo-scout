@@ -1,0 +1,41 @@
+{
+  "skill_name": "github-repo-scout",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我想自己搭一个稍后读服务，家里 NAS 用 Docker 跑，要能把网页正文存下来，离线也能看。帮我看看有什么现成的项目？",
+      "expected_output": "先输出需求画像（交付形态=自托管服务、环境=Docker/NAS、约束=离线、验收标准=正文存档），然后跑 gh-search.mjs 多条检索式（中英各半，含 wallabag/pocket alternative 等竞品词与 self-hosted 场景词）得到 ≥20 候选；再用 repo-audit.mjs 体检并在 README 证据上填 fit.json 重跑；最终给出适配榜前 3（含为什么适合、代价、最小验证步骤），并单独列出高星但落选的项目（例如功能不匹配或 AGPL 与需求冲突）与低星入选项目。不得只推荐 star 最高的项目。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "帮我找个 Python 库，能把 markdown 转成 PDF，最好能自定义封面和页眉页脚。",
+      "expected_output": "使用 --lang Python 收窄，检索式包含 'markdown to pdf'、'html to pdf'、'weasyprint alternative' 等同义/竞品词；体检时对语言命中的候选给 8/8 可落地分；报告里明确区分'能生成 PDF 的库'与'能自定义封面页眉的实现方式'，对 fit < 22 的候选给出改造工作量量级；附最小验证步骤（pip install + 3 行代码，来源为 README）。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "我们要在闭源商业产品里嵌一个富文本编辑器，有什么开源方案？注意许可证。",
+      "expected_output": "使用 --commercial --deny-licenses \"AGPL-3.0,GPL-3.0\"，许可缺失的仓库被硬门槛淘汰并在报告第五节列出；同时说明哪些高星方案（如 AGPL 的编辑器）因此落选、在什么条件下可以重新考虑（如购买商业授权、改为独立服务避免传染）；推荐 MIT/Apache 类候选并给出最小验证步骤。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "有没有比 xxl-job 更轻量的定时任务调度？我们只有一台机器。",
+      "expected_output": "识别这是「对某个已知高星项目不满意，要找更轻量的替代」场景：先做需求画像（单机、轻量、验收标准=进程内/单文件即可跑），检索式含 'cron alternative'、'scheduler lightweight'、'job scheduler single binary'、'xxl-job alternative' 等；在报告里显式对比 star 头部方案（xxl-job、Airflow）与中腰部候选（例如单二进制/嵌入式调度器），说明高星方案在「单机轻量」这个约束下的额外成本（需要数据库、需要集群、部署复杂），并推荐适配度更高的小项目，同时给出其风险（单人维护、社区小）。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "我们要选一个长期维护的依赖底座，许可证不能踩雷，帮我把权重调成偏保守的，并且要求结论有据可查。",
+      "expected_output": "使用 `--weights risk-averse`（或自定义把 license/risk 调高）；fit.json 中每个条目提供 ≥3 个独立来源（`sources`），不足的条目会被告知封顶 20 分并标 ^；报告开头给出「结论」判定（功能匹配 ≥22 且进首选/备选才算强匹配），若无强匹配则直说没有合适的现成方案而不是硬推。若模型尝试把 --weights popularity 设到 10 以上，脚本会拒绝并提示需要 --allow-star-heavy 且应说明是有意为之。",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "这个需求是我们内部特有的审批流，不是通用功能，你帮我看看有没有开源项目能直接用？",
+      "expected_output": "识别这是「定制业务逻辑」场景：仍然按流程检索并体检（候选池 ≥20、多检索式），但最终的「结论」章节应当明确给出没有强匹配（功能匹配 <22）的判断，建议自建并说明可借鉴哪几个项目的哪个部分（例如工作流引擎、表单渲染、权限模型），而不是硬推一个通用审批系统。这正是借鉴 reposcout 的 build-vs-borrow「强匹配才打断」纪律。",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub 方案侦察"
+  short_description: "Search GitHub broadly, then rank by fit instead of stars"
+  default_prompt: "Use $github-repo-scout to survey GitHub for projects that match my need, then recommend the most suitable one rather than the most-starred one."
